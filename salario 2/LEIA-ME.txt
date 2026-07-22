@@ -1,0 +1,11 @@
+ATUALIZAÇÃO DO GITHUB
+
+1. Abra o repositório contas no GitHub.
+2. Na raiz do repositório, abra o arquivo index.html antigo e exclua-o.
+3. Clique em Add file > Upload files.
+4. Envie os cinco arquivos desta pasta para a raiz:
+   index.html, manifest.json, service-worker.js, icon-192.png e icon-512.png.
+5. Clique em Commit changes.
+6. Aguarde alguns minutos e abra:
+   https://luizmarginality.github.io/contas/
+7. Caso apareça a versão antiga, use Ctrl + F5.
