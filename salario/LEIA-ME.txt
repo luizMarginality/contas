@@ -1,0 +1,23 @@
+ATUALIZAÇÃO COM INVESTIMENTOS
+
+Recursos adicionados:
+- Cadastro de banco, produto, valor e data da aplicação.
+- Percentual contratado do CDI.
+- Atualização automática do CDI pelo Banco Central, com opção manual.
+- Estimativa de saldo bruto e líquido.
+- IR regressivo estimado para CDB/RDB.
+- Gráfico de evolução por 12 meses.
+- Gráfico de distribuição por banco.
+- Backup incluindo investimentos.
+
+COMO ATUALIZAR NO GITHUB
+1. Abra a raiz do repositório contas.
+2. Clique em Add file > Upload files.
+3. Envie os arquivos desta pasta diretamente na raiz.
+4. Confirme a substituição e clique em Commit changes.
+5. Aguarde o GitHub Pages publicar.
+6. Abra o site com ?v=3 no final do endereço.
+7. Pressione Ctrl + F5 se aparecer a versão antiga.
+
+Observação: os cálculos são estimativas. A oferta de percentual do CDI deve ser
+informada conforme o produto contratado em cada banco.

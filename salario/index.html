@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f172a">
+<meta name="description" content="Controle de salário, contas e investimentos">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Meu Salário e Investimentos</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--text:#172033;--muted:#667085;--line:#e4e7ec;--blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--purple:#7c3aed;--shadow:0 10px 28px #0f172a14}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{cursor:pointer}
+.wrap{max-width:1320px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.top h1{margin:0}.top p{margin:5px 0 0;color:var(--muted)}
+.month,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.month{padding:10px 13px}.month input{border:0;outline:0}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.nav button{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:999px;font-weight:750}.nav button:hover{background:#eff6ff;color:#1d4ed8}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.summary .card{padding:18px}.summary small{color:var(--muted)}.summary strong{display:block;font-size:23px;margin-top:8px}
+.cycles{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}.cycle{padding:20px;border-top:5px solid var(--blue)}.cycle:nth-child(2){border-top-color:var(--purple)}.cycle h2{margin:0 0 14px}.cycle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mini{background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px}.mini span{font-size:12px;color:var(--muted)}.mini strong{display:block;margin-top:5px}
+.content{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}.panel{padding:20px;margin-bottom:18px}.panel h2{margin:0}.sub{color:var(--muted);margin:5px 0 16px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.full{grid-column:1/-1}label{font-size:13px;font-weight:700}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;outline:0}input:focus,select:focus{border-color:#93c5fd;box-shadow:0 0 0 4px #2563eb15}
+.actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:750}.primary{background:var(--blue);color:white}.success{background:var(--green);color:white}.light{background:#f8fafc;border:1px solid var(--line)}.danger{background:#fef2f2;color:var(--red)}
+.insight{margin-top:15px;padding:14px;border-radius:12px;background:#eff6ff;border:1px dashed #93c5fd;color:#1e3a8a;line-height:1.45}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.tab{border:1px solid var(--line);background:#fff;padding:8px 12px;border-radius:999px}.tab.active{background:#0f172a;color:#fff}.toolbar{display:flex;gap:8px;margin-bottom:12px}.toolbar>*{flex:1}
+.list{display:grid;gap:9px;max-height:660px;overflow:auto}.item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:13px;border:1px solid var(--line);border-radius:12px;background:#f8fafc}.item strong{display:block}.meta{font-size:12px;color:var(--muted);margin-top:4px}.right{text-align:right}
+.tag,.status{display:inline-block;padding:3px 7px;border-radius:999px;font-size:10px;font-weight:800;margin-top:5px}.tag{background:#e0e7ff;color:#3730a3}.pago{background:#dcfce7;color:#166534}.pendente{background:#fff7ed;color:#9a3412}.atrasado{background:#fee2e2;color:#991b1b}.item-actions{display:flex;gap:4px;justify-content:flex-end;margin-top:5px}.icon{border:0;background:white;border-radius:7px;padding:5px 7px}.empty{text-align:center;color:var(--muted);padding:30px;border:1px dashed var(--line);border-radius:12px}.hidden{display:none!important}
+.invest-section{margin-top:25px}.invest-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:16px}.invest-head h2{margin:0}.invest-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.invest-summary .card{padding:18px;border-top:4px solid var(--green)}.invest-summary small{color:var(--muted)}.invest-summary strong{display:block;font-size:22px;margin-top:7px}
+.cdi-box{display:flex;gap:10px;align-items:end;flex-wrap:wrap;padding:16px;background:#ecfdf3;border:1px solid #bbf7d0;border-radius:13px;margin-bottom:16px}.cdi-box .field{min-width:180px;flex:1}.cdi-status{font-size:12px;color:#166534;margin-top:5px}
+.chart-card{padding:18px}.chart-wrap{height:300px;position:relative}.chart-wrap canvas{width:100%;height:100%}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--muted)}.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:4px}
+.invest-list .item{border-left:4px solid var(--green)}.bank-pill{display:inline-block;background:#dcfce7;color:#166534;padding:3px 7px;border-radius:999px;font-size:10px;font-weight:800}
+.note{font-size:12px;color:var(--muted);line-height:1.45;margin-top:10px}
+.toast{position:fixed;right:20px;bottom:20px;background:#101828;color:#fff;padding:12px 16px;border-radius:10px;opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none;z-index:10}.toast.show{opacity:1;transform:none}
+@media(max-width:950px){.summary,.invest-summary{grid-template-columns:1fr 1fr}.content{grid-template-columns:1fr}}
+@media(max-width:600px){.wrap{padding:15px}.top,.invest-head{align-items:flex-start;flex-direction:column}.month{width:100%}.cycles,.summary,.invest-summary{grid-template-columns:1fr}.cycle-grid,.form{grid-template-columns:1fr}.toolbar{flex-direction:column}.chart-wrap{height:240px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div><h1>💰 Meu Salário</h1><p>Organize pagamentos, contas e investimentos em um só lugar.</p></div>
+  <div class="month">📅 <input id="month" type="month"></div>
+</header>
+<div class="nav">
+  <button onclick="document.getElementById('financeiro').scrollIntoView()">💵 Contas</button>
+  <button onclick="document.getElementById('investimentos').scrollIntoView()">📈 Investimentos</button>
+  <button onclick="document.getElementById('backup').scrollIntoView()">💾 Backup</button>
+</div>
+
+<div id="financeiro">
+<section class="summary">
+<div class="card"><small>Receita total</small><strong id="sumIncome">R$ 0,00</strong></div>
+<div class="card"><small>Contas totais</small><strong id="sumExpenses">R$ 0,00</strong></div>
+<div class="card"><small>Saldo geral</small><strong id="sumBalance">R$ 0,00</strong></div>
+<div class="card"><small>Pendente</small><strong id="sumPending">R$ 0,00</strong></div>
+</section>
+<section class="cycles">
+<article class="card cycle"><h2>📅 Pagamento do dia 15</h2><div class="cycle-grid"><div class="mini"><span>Recebo</span><strong id="inc15">R$ 0,00</strong></div><div class="mini"><span>Contas</span><strong id="exp15">R$ 0,00</strong></div><div class="mini"><span>Sobra</span><strong id="bal15">R$ 0,00</strong></div></div></article>
+<article class="card cycle"><h2>📅 Pagamento do dia 30</h2><div class="cycle-grid"><div class="mini"><span>Recebo</span><strong id="inc30">R$ 0,00</strong></div><div class="mini"><span>Contas</span><strong id="exp30">R$ 0,00</strong></div><div class="mini"><span>Sobra</span><strong id="bal30">R$ 0,00</strong></div></div></article>
+</section>
+<section class="content">
+<div>
+<article class="card panel"><h2>Meus pagamentos</h2><p class="sub">Informe quanto recebe em cada data.</p><form id="salaryForm" class="form">
+<div class="field"><label>Recebimento do dia 15</label><input id="salary15" type="number" min="0" step=".01"></div>
+<div class="field"><label>Recebimento do dia 30</label><input id="salary30" type="number" min="0" step=".01"></div>
+<div class="field"><label>Entrada extra do dia 15</label><input id="extra15" type="number" min="0" step=".01"></div>
+<div class="field"><label>Entrada extra do dia 30</label><input id="extra30" type="number" min="0" step=".01"></div>
+<div class="field"><label>Vale-alimentação</label><input id="food" type="number" min="0" step=".01"></div>
+<div class="field"><label>Meta de economia</label><input id="goal" type="number" min="0" step=".01"></div>
+<div class="actions"><button class="btn primary">Salvar pagamentos</button></div></form><div id="insight" class="insight">Cadastre os pagamentos e as contas para receber uma análise.</div></article>
+
+<article class="card panel"><h2>Cadastrar conta</h2><p class="sub">Escolha se será paga com o salário do dia 15 ou 30.</p><form id="expenseForm" class="form"><input id="editId" type="hidden">
+<div class="field full"><label>Nome da conta</label><input id="name" required></div>
+<div class="field"><label>Valor</label><input id="value" type="number" min=".01" step=".01" required></div>
+<div class="field"><label>Vencimento</label><input id="date" type="date" required></div>
+<div class="field"><label>Pagar com</label><select id="period"><option value="15">Salário do dia 15</option><option value="30">Salário do dia 30</option></select></div>
+<div class="field"><label>Categoria</label><select id="category"><option>Moradia</option><option>Alimentação</option><option>Transporte</option><option>Educação</option><option>Lazer</option><option>Assinaturas</option><option>Saúde</option><option>Compras</option><option>Outros</option></select></div>
+<div class="field"><label>Status</label><select id="status"><option value="pendente">Pendente</option><option value="pago">Pago</option></select></div>
+<div class="field"><label>Tipo</label><select id="type"><option value="unica">Conta única</option><option value="fixa">Conta fixa</option><option value="parcelada">Compra parcelada</option></select></div>
+<div id="installmentFields" class="field full hidden"><div class="form"><div class="field"><label>Parcela atual</label><input id="current" type="number" min="1" value="1"></div><div class="field"><label>Total de parcelas</label><input id="total" type="number" min="1" value="1"></div></div></div>
+<div class="actions"><button id="saveExpense" class="btn primary">Adicionar conta</button><button id="cancel" type="button" class="btn light hidden">Cancelar</button></div></form></article>
+</div>
+<div>
+<article class="card panel"><h2>Minhas contas</h2><p class="sub">Veja separadamente o que será pago em cada data.</p>
+<div class="tabs"><button class="tab active" data-period="all">Todas</button><button class="tab" data-period="15">Dia 15</button><button class="tab" data-period="30">Dia 30</button></div>
+<div class="toolbar"><input id="search" placeholder="Buscar conta..."><select id="filterStatus"><option value="all">Todos os status</option><option value="pendente">Pendentes</option><option value="pago">Pagas</option><option value="atrasado">Atrasadas</option></select></div>
+<div id="list" class="list"></div></article>
+</div>
+</section>
+</div>
+
+<section id="investimentos" class="invest-section">
+<div class="invest-head"><div><h2>📈 Meus Investimentos</h2><p class="sub">Acompanhe onde seu dinheiro está e estime o rendimento pelo CDI.</p></div></div>
+
+<div class="cdi-box">
+  <div class="field"><label>CDI anual usado nos cálculos (%)</label><input id="cdiRate" type="number" min="0" step=".01" value="14.90"></div>
+  <button id="updateCdi" class="btn success" type="button">Atualizar pelo Banco Central</button>
+  <div style="flex-basis:100%" id="cdiStatus" class="cdi-status">Você também pode informar a taxa manualmente.</div>
+</div>
+
+<div class="invest-summary">
+  <article class="card"><small>Total aplicado</small><strong id="investedTotal">R$ 0,00</strong></article>
+  <article class="card"><small>Saldo estimado hoje</small><strong id="currentInvestTotal">R$ 0,00</strong></article>
+  <article class="card"><small>Rendimento bruto</small><strong id="grossYield">R$ 0,00</strong></article>
+  <article class="card"><small>Rendimento líquido estimado</small><strong id="netYield">R$ 0,00</strong></article>
+</div>
+
+<div class="content">
+<div>
+<article class="card panel"><h2>Cadastrar investimento</h2><p class="sub">O percentual do CDI deve ser o contratado no seu banco.</p>
+<form id="investmentForm" class="form"><input id="investmentEditId" type="hidden">
+<div class="field"><label>Banco ou instituição</label><input id="bank" required placeholder="Nubank, Inter, Mercado Pago..."></div>
+<div class="field"><label>Produto</label><input id="product" required placeholder="CDB, conta remunerada..."></div>
+<div class="field"><label>Valor aplicado</label><input id="principal" type="number" min=".01" step=".01" required></div>
+<div class="field"><label>Data da aplicação</label><input id="investmentDate" type="date" required></div>
+<div class="field"><label>Percentual do CDI</label><input id="cdiPercent" type="number" min="0" step=".01" value="100" required></div>
+<div class="field"><label>Liquidez</label><select id="liquidity"><option>Diária</option><option>No vencimento</option><option>Após carência</option></select></div>
+<div class="field"><label>Tipo de tributação</label><select id="taxType"><option value="regressive">IR regressivo (CDB/RDB)</option><option value="exempt">Isento de IR</option><option value="none">Não calcular imposto</option></select></div>
+<div class="field"><label>Vencimento (opcional)</label><input id="maturityDate" type="date"></div>
+<div class="actions"><button id="saveInvestment" class="btn success">Adicionar investimento</button><button id="cancelInvestment" type="button" class="btn light hidden">Cancelar</button></div>
+</form>
+<div class="note">O cálculo é uma estimativa com capitalização diária em 252 dias úteis por ano. Não inclui taxas da instituição, IOF ou mudanças históricas do CDI.</div>
+</article>
+
+<article class="card chart-card"><h2>Evolução estimada do patrimônio</h2><p class="sub">Projeção dos próximos 12 meses mantendo as taxas atuais.</p><div class="chart-wrap"><canvas id="growthChart"></canvas></div></article>
+</div>
+
+<div>
+<article class="card panel"><h2>Carteira de investimentos</h2><p class="sub">Comparação por banco, rentabilidade e rendimento.</p><div id="investmentList" class="list invest-list"></div></article>
+<article class="card chart-card"><h2>Distribuição por banco</h2><p class="sub">Quanto do patrimônio está em cada instituição.</p><div class="chart-wrap"><canvas id="bankChart"></canvas></div><div id="bankLegend" class="legend"></div></article>
+</div>
+</div>
+</section>
+
+<article id="backup" class="card panel"><h2>Backup geral</h2><p class="sub">Inclui salários, contas e investimentos.</p><div class="actions"><button id="export" class="btn light">Exportar</button><button id="importBtn" class="btn light">Importar</button><button id="clear" class="btn danger">Apagar tudo</button><input id="importFile" class="hidden" type="file" accept=".json"></div></article>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+const KEY='meu-salario-investimentos-v3';let periodFilter='all';
+const $=id=>document.getElementById(id);
+const money=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const monthNow=()=>{let d=new Date;return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
+let state=(()=>{try{return JSON.parse(localStorage.getItem(KEY))||{month:monthNow(),months:{},investments:[],cdiRate:14.9,cdiUpdated:null}}catch{return{month:monthNow(),months:{},investments:[],cdiRate:14.9,cdiUpdated:null}}})();
+if(!state.investments)state.investments=[];if(!state.cdiRate)state.cdiRate=14.9;
+
+function data(){if(!state.months[state.month])state.months[state.month]={salary15:0,salary30:0,extra15:0,extra30:0,food:567,goal:300,expenses:[]};return state.months[state.month]}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(window.tm);window.tm=setTimeout(()=>$('toast').classList.remove('show'),2400)}
+function statusOf(e){if(e.status==='pago')return'pago';let a=new Date;a.setHours(0,0,0,0);return new Date(e.date+'T00:00:00')<a?'atrasado':'pendente'}
+function defaultDate(){let t=new Date().toISOString().slice(0,10);$('date').value=t.startsWith(state.month)?t:state.month+'-10';$('investmentDate').value=t}
+function fill(){let d=data();['salary15','salary30','extra15','extra30','food','goal'].forEach(id=>$(id).value=d[id]||'');$('cdiRate').value=state.cdiRate}
+function render(){renderFinance();renderInvestments()}
+
+function renderFinance(){
+ let d=data(),i15=+d.salary15 + +d.extra15,i30=+d.salary30 + +d.extra30,e15=d.expenses.filter(e=>e.period==='15').reduce((s,e)=>s+ +e.value,0),e30=d.expenses.filter(e=>e.period==='30').reduce((s,e)=>s+ +e.value,0),pending=d.expenses.filter(e=>statusOf(e)!=='pago').reduce((s,e)=>s+ +e.value,0);
+ $('sumIncome').textContent=money(i15+i30);$('sumExpenses').textContent=money(e15+e30);$('sumBalance').textContent=money(i15+i30-e15-e30);$('sumPending').textContent=money(pending);
+ $('inc15').textContent=money(i15);$('exp15').textContent=money(e15);$('bal15').textContent=money(i15-e15);$('inc30').textContent=money(i30);$('exp30').textContent=money(e30);$('bal30').textContent=money(i30-e30);
+ $('insight').innerHTML=i15+i30===0?'Informe quanto recebe nos dias 15 e 30.':i15-e15<0?'⚠️ As contas do dia 15 ultrapassam esse pagamento em <strong>'+money(e15-i15)+'</strong>.':i30-e30<0?'⚠️ As contas do dia 30 ultrapassam esse pagamento em <strong>'+money(e30-i30)+'</strong>.':'✅ Sobram <strong>'+money(i15-e15)+'</strong> do dia 15 e <strong>'+money(i30-e30)+'</strong> do dia 30.';
+ renderList()
+}
+function renderList(){
+ let q=$('search').value.toLowerCase(),sf=$('filterStatus').value,items=data().expenses.filter(e=>(periodFilter==='all'||e.period===periodFilter)&&e.name.toLowerCase().includes(q)&&(sf==='all'||statusOf(e)===sf)).sort((a,b)=>a.date.localeCompare(b.date));
+ $('list').innerHTML=items.length?items.map(e=>{let s=statusOf(e),p=e.type==='parcelada'?' • Parcela '+e.current+'/'+e.total:e.type==='fixa'?' • Conta fixa':'';return `<div class="item"><div><strong>${escapeHtml(e.name)}</strong><div class="meta">${e.category} • vence ${new Date(e.date+'T12:00:00').toLocaleDateString('pt-BR')}${p}</div><span class="tag">DIA ${e.period}</span></div><div class="right"><strong>${money(e.value)}</strong><span class="status ${s}">${s}</span><div class="item-actions"><button class="icon" onclick="togglePaid('${e.id}')">${s==='pago'?'↩️':'✅'}</button><button class="icon" onclick="editItem('${e.id}')">✏️</button><button class="icon" onclick="removeItem('${e.id}')">🗑️</button></div></div></div>`}).join(''):'<div class="empty">Nenhuma conta encontrada.</div>'
+}
+function escapeHtml(v){let d=document.createElement('div');d.textContent=v;return d.innerHTML}
+
+function daysBetween(a,b=new Date()){const start=new Date(a+'T12:00:00');return Math.max(0,Math.floor((b-start)/86400000))}
+function businessDaysApprox(days){return days*252/365}
+function annualRate(inv){return (state.cdiRate/100)*(Number(inv.cdiPercent)/100)}
+function grossValue(inv,date=new Date()){
+ const bd=businessDaysApprox(daysBetween(inv.date,date));const daily=Math.pow(1+annualRate(inv),1/252)-1;
+ return Number(inv.principal)*Math.pow(1+daily,bd)
+}
+function irRate(days){if(days<=180)return .225;if(days<=360)return .20;if(days<=720)return .175;return .15}
+function netValue(inv,date=new Date()){
+ const gross=grossValue(inv,date),profit=Math.max(0,gross-Number(inv.principal));
+ if(inv.taxType==='regressive')return gross-profit*irRate(daysBetween(inv.date,date));
+ return gross
+}
+function renderInvestments(){
+ const items=state.investments,total=items.reduce((s,i)=>s+Number(i.principal),0),gross=items.reduce((s,i)=>s+grossValue(i),0),net=items.reduce((s,i)=>s+netValue(i),0);
+ $('investedTotal').textContent=money(total);$('currentInvestTotal').textContent=money(gross);$('grossYield').textContent=money(gross-total);$('netYield').textContent=money(net-total);
+ $('cdiStatus').textContent=state.cdiUpdated?'Taxa atualizada em '+new Date(state.cdiUpdated).toLocaleString('pt-BR')+'.':'Você também pode informar a taxa manualmente.';
+ $('investmentList').innerHTML=items.length?items.map(i=>{
+   const gv=grossValue(i),nv=netValue(i),profit=gv-Number(i.principal);
+   return `<div class="item"><div><strong>${escapeHtml(i.product)}</strong><div class="meta"><span class="bank-pill">${escapeHtml(i.bank)}</span> • ${i.cdiPercent}% do CDI • ${i.liquidity}<br>Aplicado em ${new Date(i.date+'T12:00:00').toLocaleDateString('pt-BR')}</div></div><div class="right"><strong>${money(gv)}</strong><div class="meta">Aplicado: ${money(i.principal)}<br>Bruto: +${money(profit)}<br>Líquido est.: ${money(nv)}</div><div class="item-actions"><button class="icon" onclick="editInvestment('${i.id}')">✏️</button><button class="icon" onclick="removeInvestment('${i.id}')">🗑️</button></div></div></div>`
+ }).join(''):'<div class="empty">Nenhum investimento cadastrado.</div>';
+ drawGrowthChart();drawBankChart()
+}
+function resizeCanvas(canvas){const r=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=r.width*dpr;canvas.height=r.height*dpr;const c=canvas.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return {c,w:r.width,h:r.height}}
+function drawGrowthChart(){
+ const canvas=$('growthChart'),{c,w,h}=resizeCanvas(canvas);c.clearRect(0,0,w,h);
+ const months=Array.from({length:13},(_,m)=>{const d=new Date();d.setMonth(d.getMonth()+m);return state.investments.reduce((s,i)=>s+grossValue(i,d),0)});
+ const max=Math.max(...months,1),min=Math.min(...months,0),pad=38;
+ c.strokeStyle='#e4e7ec';c.lineWidth=1;for(let y=0;y<5;y++){let py=pad+(h-pad*2)*y/4;c.beginPath();c.moveTo(pad,py);c.lineTo(w-pad,py);c.stroke()}
+ c.strokeStyle='#16a34a';c.lineWidth=3;c.beginPath();months.forEach((v,i)=>{let x=pad+(w-pad*2)*i/12,y=h-pad-(v-min)/(max-min||1)*(h-pad*2);i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke();
+ c.fillStyle='#667085';c.font='11px system-ui';c.textAlign='center';[0,3,6,9,12].forEach(i=>{let d=new Date();d.setMonth(d.getMonth()+i);c.fillText(d.toLocaleDateString('pt-BR',{month:'short'}),pad+(w-pad*2)*i/12,h-12)});
+ c.textAlign='left';c.fillText(money(max),4,pad);c.fillText(money(min),4,h-pad)
+}
+function drawBankChart(){
+ const canvas=$('bankChart'),{c,w,h}=resizeCanvas(canvas),groups={};state.investments.forEach(i=>groups[i.bank]=(groups[i.bank]||0)+Number(i.principal));
+ const entries=Object.entries(groups),total=entries.reduce((s,x)=>s+x[1],0),colors=['#2563eb','#16a34a','#7c3aed','#d97706','#dc2626','#0891b2','#db2777'];
+ c.clearRect(0,0,w,h);const cx=w/2,cy=h/2,r=Math.min(w,h)*.32;let start=-Math.PI/2;
+ if(!total){c.fillStyle='#667085';c.textAlign='center';c.fillText('Cadastre investimentos para ver o gráfico.',cx,cy);$('bankLegend').innerHTML='';return}
+ entries.forEach(([bank,value],idx)=>{let angle=value/total*Math.PI*2;c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,start,start+angle);c.closePath();c.fillStyle=colors[idx%colors.length];c.fill();start+=angle});
+ c.beginPath();c.arc(cx,cy,r*.55,0,Math.PI*2);c.fillStyle='#fff';c.fill();c.fillStyle='#172033';c.textAlign='center';c.font='bold 15px system-ui';c.fillText(money(total),cx,cy+5);
+ $('bankLegend').innerHTML=entries.map(([bank,value],idx)=>`<span><i class="dot" style="background:${colors[idx%colors.length]}"></i>${escapeHtml(bank)}: ${money(value)}</span>`).join('')
+}
+
+$('month').value=state.month;$('month').onchange=e=>{state.month=e.target.value;data();save();fill();defaultDate();render()};
+$('salaryForm').onsubmit=e=>{e.preventDefault();let d=data();['salary15','salary30','extra15','extra30','food','goal'].forEach(id=>d[id]=+$(id).value||0);save();render();toast('Pagamentos salvos.')};
+$('type').onchange=()=>$('installmentFields').classList.toggle('hidden',$('type').value!=='parcelada');
+$('expenseForm').onsubmit=e=>{e.preventDefault();let d=data(),id=$('editId').value,type=$('type').value,item={id:id||crypto.randomUUID(),name:$('name').value.trim(),value:+$('value').value,date:$('date').value,period:$('period').value,category:$('category').value,status:$('status').value,type,current:type==='parcelada'?+$('current').value:null,total:type==='parcelada'?+$('total').value:null};if(item.current>item.total)return toast('Parcela atual maior que o total.');if(id)d.expenses[d.expenses.findIndex(x=>x.id===id)]=item;else d.expenses.push(item);save();resetExpense();render();toast(id?'Conta atualizada.':'Conta adicionada.')};
+function resetExpense(){$('expenseForm').reset();$('editId').value='';$('saveExpense').textContent='Adicionar conta';$('cancel').classList.add('hidden');$('installmentFields').classList.add('hidden');defaultDate()}$('cancel').onclick=resetExpense;
+window.editItem=id=>{let e=data().expenses.find(x=>x.id===id);['name','value','date','period','category','status','type'].forEach(k=>$(k).value=e[k]);$('editId').value=e.id;$('current').value=e.current||1;$('total').value=e.total||1;$('saveExpense').textContent='Salvar alteração';$('cancel').classList.remove('hidden');$('installmentFields').classList.toggle('hidden',e.type!=='parcelada');$('expenseForm').scrollIntoView({behavior:'smooth'})};
+window.removeItem=id=>{if(confirm('Excluir esta conta?')){data().expenses=data().expenses.filter(e=>e.id!==id);save();render()}};window.togglePaid=id=>{let e=data().expenses.find(x=>x.id===id);e.status=e.status==='pago'?'pendente':'pago';save();render()};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');periodFilter=b.dataset.period;renderList()});$('search').oninput=renderList;$('filterStatus').onchange=renderList;
+
+$('cdiRate').onchange=()=>{state.cdiRate=+$('cdiRate').value||0;state.cdiUpdated=new Date().toISOString();save();renderInvestments()};
+$('updateCdi').onclick=async()=>{
+ $('updateCdi').disabled=true;$('cdiStatus').textContent='Buscando taxa mais recente...';
+ try{
+   const url='https://api.bcb.gov.br/dados/serie/bcdata.sgs.12/dados/ultimos/1?formato=json';
+   const response=await fetch(url);if(!response.ok)throw new Error();
+   const rows=await response.json();const daily=Number(String(rows[0].valor).replace(',','.'));if(!daily)throw new Error();
+   state.cdiRate=(Math.pow(1+daily/100,252)-1)*100;state.cdiUpdated=new Date().toISOString();$('cdiRate').value=state.cdiRate.toFixed(2);save();renderInvestments();toast('CDI atualizado.')
+ }catch{$('cdiStatus').textContent='Não foi possível atualizar automaticamente. Informe a taxa anual manualmente.';toast('Falha ao buscar o CDI.')}
+ finally{$('updateCdi').disabled=false}
+};
+$('investmentForm').onsubmit=e=>{
+ e.preventDefault();const id=$('investmentEditId').value,item={id:id||crypto.randomUUID(),bank:$('bank').value.trim(),product:$('product').value.trim(),principal:+$('principal').value,date:$('investmentDate').value,cdiPercent:+$('cdiPercent').value,liquidity:$('liquidity').value,taxType:$('taxType').value,maturityDate:$('maturityDate').value};
+ if(id)state.investments[state.investments.findIndex(x=>x.id===id)]=item;else state.investments.push(item);save();resetInvestment();renderInvestments();toast(id?'Investimento atualizado.':'Investimento adicionado.')
+};
+function resetInvestment(){$('investmentForm').reset();$('investmentEditId').value='';$('cdiPercent').value=100;$('saveInvestment').textContent='Adicionar investimento';$('cancelInvestment').classList.add('hidden');$('investmentDate').value=new Date().toISOString().slice(0,10)}
+$('cancelInvestment').onclick=resetInvestment;
+window.editInvestment=id=>{const i=state.investments.find(x=>x.id===id);['bank','product','principal','cdiPercent','liquidity','taxType','maturityDate'].forEach(k=>$(k).value=i[k]||'');$('investmentDate').value=i.date;$('investmentEditId').value=i.id;$('saveInvestment').textContent='Salvar alteração';$('cancelInvestment').classList.remove('hidden');$('investmentForm').scrollIntoView({behavior:'smooth'})};
+window.removeInvestment=id=>{if(confirm('Excluir este investimento?')){state.investments=state.investments.filter(i=>i.id!==id);save();renderInvestments()}};
+
+$('export').onclick=()=>{let blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-meu-salario-investimentos.json';a.click();URL.revokeObjectURL(a.href)};
+$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=e=>{let r=new FileReader;r.onload=()=>{try{const obj=JSON.parse(r.result);localStorage.setItem(KEY,JSON.stringify(obj));location.reload()}catch{toast('Backup inválido.')}};r.readAsText(e.target.files[0])};
+$('clear').onclick=()=>{if(confirm('Apagar salários, contas e investimentos?')){localStorage.removeItem(KEY);location.reload()}};
+window.addEventListener('resize',()=>{drawGrowthChart();drawBankChart()});
+if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js'));
+fill();defaultDate();render();
+</script>
+</body></html>
